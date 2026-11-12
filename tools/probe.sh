@@ -15,3 +15,4 @@ p MBC-STREAM "https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=mfm" 
 p SBS-STREAM "https://apis.sbs.co.kr/play-api/1.0/livestream/powerpc/powerfm?protocol=hls&ssl=Y" "https://www.sbs.co.kr/" 400
 p TBS-STREAM "https://cdnfm.tbs.seoul.kr/tbs/_definst_/tbs_fm_web_360.smil/playlist.m3u8" "" 300
 p EBS-STREAM "https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8" "" 300
+echo "=== MBC-CHANNELS"; curl -sS -m 20 -A "$UA" "https://miniunit.imbc.com/Schedule?rtype=json" | grep -o '"Channel":"[^"]*"' | sort | uniq -c
