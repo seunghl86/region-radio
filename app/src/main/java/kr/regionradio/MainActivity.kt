@@ -2,6 +2,7 @@ package kr.regionradio
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.graphics.Typeface
@@ -23,6 +24,7 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
+import java.util.concurrent.Executors
 
 class MainActivity : Activity(), RadioState.Listener {
 
@@ -32,6 +34,9 @@ class MainActivity : Activity(), RadioState.Listener {
     private lateinit var regionText: TextView
     private lateinit var nowText: TextView
     private lateinit var freqText: TextView
+    private lateinit var progText: TextView
+    private val io = Executors.newSingleThreadExecutor()
+    private var schedLoading = false
     private lateinit var listBox: LinearLayout
     private lateinit var spinner: Spinner
     private lateinit var stopButton: Button
@@ -135,6 +140,10 @@ class MainActivity : Activity(), RadioState.Listener {
         freqText.setTextColor(0xFFD9480F.toInt())
         root.addView(freqText)
 
+        progText = TextView(this)
+        progText.textSize = 15f
+        root.addView(progText)
+
         stopButton = Button(this)
         stopButton.isAllCaps = false
         stopButton.text = "재생 멈춤"
@@ -181,10 +190,13 @@ class MainActivity : Activity(), RadioState.Listener {
         if (curCh == null) {
             nowText.text = "아래에서 방송을 고르세요"
             freqText.text = "--.-"
+            progText.text = ""
         } else {
             val playing = c?.isPlaying == true
             nowText.text = (if (curSt != null) Catalog.stationName(curSt) else curCh.name) + if (playing) " · 재생 중" else " · 멈춤"
             freqText.text = if (curSt != null) Catalog.freqText(curSt.freq) else "--.-"
+            val p = Schedule.current(curCh.key)
+            progText.text = if (p != null) "지금: " + p.title + " (" + Schedule.hm(p.start) + "~" + Schedule.hm(p.end) + ")" else ""
         }
         stopButton.visibility = if (curCh != null) View.VISIBLE else View.GONE
 
@@ -198,11 +210,71 @@ class MainActivity : Activity(), RadioState.Listener {
             var label = Catalog.freqText(st.freq) + "   " + Catalog.stationName(st)
             if (st.note.isNotEmpty()) label += " (" + st.note + ")"
             if (!ch.hasStream) label += " · 주파수만"
+            val nowProg = Schedule.current(st.ch)
+            if (nowProg != null) label += "\n지금: " + nowProg.title
             b.text = label
             if (st.ch == curId) b.setTypeface(Typeface.DEFAULT_BOLD)
             b.setOnClickListener { play(ch) }
-            listBox.addView(b, lp(top = 4))
+
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
+            row.addView(b, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            if (Schedule.has(st.ch)) {
+                val s = Button(this)
+                s.isAllCaps = false
+                s.text = "편성표"
+                s.setOnClickListener { showSchedule(ch, st) }
+                row.addView(s, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            }
+            listBox.addView(row, lp(top = 4))
         }
+        loadSchedules()
+    }
+
+    /** 이 지역 방송들의 오늘 편성표를 뒤에서 받아 오고, 받으면 화면을 다시 그린다 */
+    private fun loadSchedules() {
+        if (schedLoading) return
+        val keys = RadioState.region.stations.map { it.ch }.filter { Schedule.needsLoad(it) }
+        if (keys.isEmpty()) return
+        schedLoading = true
+        io.execute {
+            var got = false
+            for (k in keys) if (Schedule.load(k) != null) got = true
+            runOnUiThread {
+                schedLoading = false
+                if (got) render()
+            }
+        }
+    }
+
+    private fun showSchedule(ch: Channel, st: Station) {
+        val list = Schedule.cached(ch.key)
+        if (list == null) {
+            Toast.makeText(this, "편성표를 불러오는 중입니다.", Toast.LENGTH_SHORT).show()
+            io.execute {
+                val l = Schedule.load(ch.key, true)
+                runOnUiThread {
+                    if (l == null) {
+                        Toast.makeText(this, "편성표를 불러오지 못했습니다. 인터넷 연결을 확인하고 다시 눌러 주세요.", Toast.LENGTH_LONG).show()
+                    } else {
+                        render()
+                        showSchedule(ch, st)
+                    }
+                }
+            }
+            return
+        }
+        val now = Schedule.nowMinutes()
+        val items = list.map {
+            (if (Schedule.inRange(it, now)) "▶ " else "     ") + Schedule.hm(it.start) + "  " + it.title
+        }.toTypedArray()
+        var title = ch.name + " 오늘 편성표"
+        if (RadioState.region.id != "seoul") title += " (서울 본방송 기준)"
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setItems(items, null)
+            .setPositiveButton("닫기", null)
+            .show()
     }
 
     private fun play(ch: Channel) {

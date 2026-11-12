@@ -49,7 +49,7 @@ object StreamResolver {
         return if (body.startsWith("http")) body else null
     }
 
-    private fun get(url: String, referer: String): String {
+    fun get(url: String, referer: String): String {
         val c = URL(url).openConnection() as HttpURLConnection
         c.connectTimeout = 8000
         c.readTimeout = 8000

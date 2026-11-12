@@ -67,6 +67,7 @@ class RadioService : MediaLibraryService(), RadioState.Listener {
         session = MediaLibrarySession.Builder(this, player, LibraryCallback()).build()
         RadioState.addListener(this)
         RegionTracker.start(this)
+        main.postDelayed(ticker, 300_000L)
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession = session
@@ -76,6 +77,7 @@ class RadioService : MediaLibraryService(), RadioState.Listener {
     }
 
     override fun onDestroy() {
+        main.removeCallbacks(ticker)
         RadioState.removeListener(this)
         RegionTracker.stop()
         session.release()
@@ -88,10 +90,32 @@ class RadioService : MediaLibraryService(), RadioState.Listener {
     override fun onRegionChanged() {
         main.post {
             session.notifyChildrenChanged(ROOT_ID, playableStations().size, null)
-            val cur = player.currentMediaItem ?: return@post
-            val ch = Catalog.channels[cur.mediaId] ?: return@post
-            val updated = cur.buildUpon().setMediaMetadata(metadata(ch)).build()
-            player.replaceMediaItem(player.currentMediaItemIndex, updated)
+            refreshCurrent()
+        }
+    }
+
+    /** 듣고 있는 방송의 표시 정보(주파수, 프로그램 이름)를 지금 기준으로 고친다. 재생은 끊기지 않는다. */
+    private fun refreshCurrent() {
+        val cur = player.currentMediaItem ?: return
+        val ch = Catalog.channels[cur.mediaId] ?: return
+        val m = metadata(ch)
+        if (m.title?.toString() == cur.mediaMetadata.title?.toString() &&
+            m.artist?.toString() == cur.mediaMetadata.artist?.toString()
+        ) return
+        player.replaceMediaItem(player.currentMediaItemIndex, cur.buildUpon().setMediaMetadata(m).build())
+    }
+
+    /** 5분마다 프로그램 이름을 새로 확인한다 */
+    private val ticker = object : Runnable {
+        override fun run() {
+            val id = player.currentMediaItem?.mediaId
+            if (id != null) {
+                io.execute {
+                    Schedule.load(id)
+                    main.post { refreshCurrent() }
+                }
+            }
+            main.postDelayed(this, 300_000L)
         }
     }
 
@@ -109,10 +133,12 @@ class RadioService : MediaLibraryService(), RadioState.Listener {
         } else {
             r.name + "에서는 FM 주파수 없음"
         }
+        val prog = Schedule.current(ch.key)
+        val line = if (prog != null) prog.title + " · " + sub else sub
         return MediaMetadata.Builder()
             .setTitle(title)
-            .setArtist(sub)
-            .setSubtitle(sub)
+            .setArtist(line)
+            .setSubtitle(line)
             .setIsBrowsable(false)
             .setIsPlayable(true)
             .setMediaType(MediaMetadata.MEDIA_TYPE_RADIO_STATION)
@@ -139,6 +165,7 @@ class RadioService : MediaLibraryService(), RadioState.Listener {
     private fun resolveItem(mediaId: String): MediaItem? {
         val ch = Catalog.channels[mediaId] ?: return null
         val url = StreamResolver.resolve(ch) ?: return null
+        Schedule.load(ch.key) // 지금 방송 중인 프로그램 이름을 함께 보여 주기 위해
         val b = MediaItem.Builder()
             .setMediaId(mediaId)
             .setUri(url)
