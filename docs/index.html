@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지역 자동 라디오 튜너</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* 배치: 위에서부터 지역 → 큰 주파수 표시 → FM 눈금판 → 방송 목록. 한 손 조작용 1열 */
+:root{
+  --bg:#edf0f3; --surface:#ffffff; --ink:#14202b; --muted:#5a6a79; --line:#d3dae1;
+  --accent:#d9480f; --accent-ink:#ffffff; --soft:#fff1e8;
+  --display:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f151b; --surface:#17202a; --ink:#e7edf2; --muted:#8e9fae; --line:#2a3743;
+    --accent:#ff8a3d; --accent-ink:#1a0f06; --soft:#2a1d12; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --surface:#17202a; --ink:#e7edf2; --muted:#8e9fae; --line:#2a3743;
+  --accent:#ff8a3d; --accent-ink:#1a0f06; --soft:#2a1d12; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:16px}
+h1{font-size:18px;font-weight:700;margin:0;text-wrap:balance}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.region{display:flex;flex-direction:column;gap:6px}
+.region label{font-size:13px;color:var(--muted)}
+select{font:inherit;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;width:100%}
+select:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.status{font-size:13px;color:var(--muted);margin:0}
+.status b{color:var(--ink);font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 16px}
+.now{display:flex;flex-direction:column;gap:2px}
+.now .name{font-size:17px;font-weight:700}
+.now .sub{font-size:13px;color:var(--muted)}
+.freq{font-family:var(--display);font-weight:600;font-size:64px;line-height:1.05;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:var(--accent);display:flex;align-items:baseline;gap:8px}
+.freq small{font-size:16px;color:var(--muted);letter-spacing:0;font-weight:500}
+.listen{display:inline-block;margin-top:10px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.dial{position:relative;height:74px;margin-top:16px;border-top:1px solid var(--line);padding-top:10px}
+.band{position:relative;height:34px;border-radius:6px;
+  background:
+   repeating-linear-gradient(90deg,var(--muted) 0 1px,transparent 1px 5%) 0 0/100% 14px no-repeat,
+   repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 1%) 0 0/100% 8px no-repeat;
+  border-right:1px solid var(--muted)}
+.mark{position:absolute;top:16px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--muted);border:0;padding:0;cursor:pointer}
+.mark::after{content:"";position:absolute;inset:-12px -6px}
+.mark.on{background:var(--accent)}
+.needle{position:absolute;top:0;width:2px;height:44px;margin-left:-1px;background:var(--accent);transition:left .45s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion: reduce){.needle{transition:none}}
+.scale{display:flex;justify-content:space-between;font-family:var(--display);font-size:11px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:inherit;font-size:14px;font-weight:500;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.st{width:100%;display:grid;grid-template-columns:84px 1fr auto;align-items:center;gap:10px;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.st .f{font-family:var(--display);font-weight:600;font-size:20px;font-variant-numeric:tabular-nums}
+.st .n{font-weight:600;font-size:15px}
+.st .d{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.st .k{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.st[aria-current="true"]{border-color:var(--accent);background:var(--soft)}
+.st[aria-current="true"] .f{color:var(--accent)}
+.toast{font-size:14px;background:var(--ink);color:var(--bg);border-radius:10px;padding:10px 14px;margin:0}
+.toast[hidden]{display:none}
+.foot{font-size:12px;color:var(--muted);margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1>지역 자동 라디오 튜너</h1></div>
+
+  <div class="region">
+    <label for="regionSel">현재 지역</label>
+    <select id="regionSel"></select>
+    <p class="status" id="status">지역을 고르면 듣던 방송을 그 지역 주파수로 다시 맞춥니다.</p>
+  </div>
+
+  <p class="toast" id="toast" role="status" hidden></p>
+
+  <section class="panel" aria-live="polite">
+    <div class="now">
+      <span class="name" id="nowName"></span>
+      <span class="sub" id="nowSub"></span>
+    </div>
+    <div class="freq"><span id="nowFreq"></span><small>MHz</small></div>
+    <a class="listen" id="listen" href="#" target="_blank" rel="noopener">방송사 누리집에서 온라인으로 듣기</a>
+    <div class="dial">
+      <div class="band" id="band"><div class="needle" id="needle"></div></div>
+      <div class="scale"><span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108</span></div>
+    </div>
+  </section>
+
+  <div class="filters" id="filters"></div>
+  <ul class="list" id="list"></ul>
+
+  <p class="foot">주파수는 각 지역의 대표 송신소 기준입니다. 산이나 건물에 가리면 가까운 다른 지역 주파수가 더 잘 잡힐 수 있습니다. 기독교·불교·천주교·원불교 방송과 클래식 채널은 넣지 않았습니다.</p>
+</div>
+
+<script>
+// 채널 정의: 이름, 분류, 온라인 듣기 주소
+const CH = {
+  k1:{n:"KBS 1라디오",k:"뉴스·시사",u:"https://onair.kbs.co.kr"},
+  k2:{n:"KBS 해피FM",k:"음악·예능",u:"https://onair.kbs.co.kr"},
+  kc:{n:"KBS 쿨FM",k:"음악·예능",u:"https://onair.kbs.co.kr"},
+  ms:{n:"MBC 표준FM",k:"음악·예능",u:"https://www.imbc.com/broad/radio"},
+  m4:{n:"MBC FM4U",k:"음악·예능",u:"https://www.imbc.com/broad/radio"},
+  sp:{n:"SBS 파워FM",k:"음악·예능",u:"https://www.sbs.co.kr/radio"},
+  sl:{n:"SBS 러브FM",k:"음악·예능",u:"https://www.sbs.co.kr/radio"},
+  tbn:{n:"TBN 교통방송",k:"교통",u:"https://www.tbn.or.kr"},
+  tbs:{n:"TBS 교통방송",k:"교통",u:"https://tbs.seoul.kr"},
+  ebs:{n:"EBS FM",k:"교육",u:"https://www.ebs.co.kr/radio"},
+  ytn:{n:"YTN 라디오",k:"뉴스·시사",u:"https://radio.ytn.co.kr"},
+  ifm:{n:"경인방송 iFM",k:"음악·예능",u:""},
+  obs:{n:"OBS 라디오",k:"음악·예능",u:""}
+};
+// 지역: [채널, 주파수, 지역 방송 이름(있을 때), 비고(있을 때)]
+const REGIONS = [
+ {id:"seoul",n:"서울·인천·경기",lat:37.5665,lon:126.978,s:[["k1",97.3],["k2",106.1],["kc",89.1],["ms",95.9],["m4",91.9],["sp",107.7],["sl",103.5],["tbs",95.1],["tbn",100.5,"TBN 경인교통방송"],["ebs",104.5],["ytn",94.5],["ifm",90.7],["obs",99.9]]},
+ {id:"chuncheon",n:"춘천",lat:37.881,lon:127.730,s:[["k1",99.5],["ms",92.3],["m4",94.5],["sp",105.1,"G1 프레시FM"],["tbn",103.7,"TBN 강원교통방송"],["ebs",106.5]]},
+ {id:"wonju",n:"원주",lat:37.342,lon:127.920,s:[["k1",97.1],["ms",92.7],["m4",98.9],["sp",103.1,"G1 프레시FM"],["tbn",105.9,"TBN 강원교통방송"],["ebs",104.9]]},
+ {id:"gangneung",n:"강릉",lat:37.752,lon:128.876,s:[["k1",98.9],["ms",96.3],["m4",94.3],["sp",106.1,"G1 프레시FM"],["tbn",105.5,"TBN 강원교통방송"],["ebs",104.9]]},
+ {id:"cheonan",n:"천안·아산",lat:36.815,lon:127.114,s:[["k1",89.9],["k2",100.9,"","대전 식장산 송신"],["ms",92.5],["m4",97.5,"","대전 식장산 송신"],["sp",95.5,"TJB 파워FM"],["tbn",103.1,"TBN 충남교통방송"],["ebs",105.7]]},
+ {id:"seosan",n:"서산·당진",lat:36.785,lon:126.450,s:[["k1",88.1],["ms",91.3],["sp",96.5,"TJB 파워FM"],["tbn",103.9,"TBN 충남교통방송"],["ebs",102.3]]},
+ {id:"daejeon",n:"대전·세종",lat:36.351,lon:127.385,s:[["k1",94.7],["k2",100.9],["ms",92.5],["m4",97.5],["sp",95.7,"TJB 파워FM"],["tbn",102.9,"TBN 대전교통방송"],["ebs",105.7]]},
+ {id:"cheongju",n:"청주",lat:36.642,lon:127.489,s:[["k1",89.3],["k2",90.9],["ms",107.1],["m4",99.7],["sp",101.5,"CJB 조이FM"],["tbn",103.3,"TBN 충북교통방송"],["ebs",105.1]]},
+ {id:"jeonju",n:"전주",lat:35.824,lon:127.148,s:[["k1",96.9],["k2",92.9],["ms",94.3],["m4",99.1],["sp",90.1,"JTV 매직FM"],["tbn",102.5,"TBN 전북교통방송"],["ebs",106.9]]},
+ {id:"gwangju",n:"광주",lat:35.160,lon:126.852,s:[["k1",90.5],["k2",95.5],["ms",93.9],["m4",91.5],["sp",101.1,"kbc 마이FM"],["tbn",97.3,"TBN 광주교통방송"],["ebs",105.3]]},
+ {id:"mokpo",n:"목포",lat:34.812,lon:126.392,s:[["k1",105.9],["ms",89.1],["m4",102.3],["ebs",104.1]]},
+ {id:"yeosu",n:"여수·순천·광양",lat:34.950,lon:127.487,s:[["k1",95.7],["k2",100.9],["ms",100.3],["m4",98.3],["tbn",103.5,"TBN 광주교통방송"],["ebs",106.3]]},
+ {id:"daegu",n:"대구",lat:35.871,lon:128.601,s:[["k1",101.3],["k2",102.3],["ms",96.5],["m4",95.3],["sp",99.3,"TBC 드림FM"],["tbn",103.9,"TBN 대구교통방송"],["ebs",105.1]]},
+ {id:"andong",n:"안동",lat:36.568,lon:128.730,s:[["k1",90.5],["ms",100.1],["m4",91.3],["ebs",107.7]]},
+ {id:"pohang",n:"포항",lat:36.019,lon:129.343,s:[["k1",95.9],["ms",100.7],["m4",97.9],["tbn",103.5,"TBN 경북교통방송"],["ebs",106.7]]},
+ {id:"busan",n:"부산",lat:35.180,lon:129.076,s:[["k1",103.7],["k2",97.1],["ms",95.9],["m4",88.9],["sp",99.9,"KNN 파워FM"],["sl",105.7,"KNN 러브FM"],["tbn",94.9,"TBN 부산교통방송"],["ebs",107.7]]},
+ {id:"ulsan",n:"울산",lat:35.539,lon:129.311,s:[["k1",90.7],["ms",97.5],["m4",98.7],["sp",92.3,"ubc 그린FM"],["tbn",104.1,"TBN 울산교통방송"],["ebs",105.9]]},
+ {id:"changwon",n:"창원",lat:35.228,lon:128.681,s:[["k1",91.7],["k2",106.1],["ms",98.9],["m4",100.5],["sp",102.5,"KNN 파워FM"],["sl",90.9,"KNN 러브FM"],["tbn",95.5,"TBN 경남교통방송"],["ebs",104.3]]},
+ {id:"jinju",n:"진주",lat:35.180,lon:128.108,s:[["k1",90.3],["ms",91.1],["m4",97.7],["sp",105.5,"KNN 파워FM"],["sl",98.7,"KNN 러브FM"],["tbn",100.1,"TBN 경남교통방송"],["ebs",101.5]]},
+ {id:"jeju",n:"제주",lat:33.499,lon:126.531,s:[["k1",99.1],["k2",91.9],["ms",97.9],["m4",90.1],["sp",101.5,"JIBS 뉴파워FM"],["tbn",105.5,"TBN 제주교통방송"],["ebs",107.3]]}
+];
+const KINDS = ["전체","음악·예능","뉴스·시사","교통","교육"];
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+let region = REGIONS.find(r => r.id === store.get("radio.region")) || REGIONS.find(r => r.id === "cheonan");
+let chKey = store.get("radio.ch") || "m4";
+let kind = "전체";
+let auto = false;
+
+const label = (r, s) => s[2] || CH[s[0]].n;
+const fmt = f => f.toFixed(1);
+const pos = f => ((f - 88) / 20 * 100) + "%";
+
+function nearest(lat, lon){
+  const rad = d => d * Math.PI / 180;
+  let best = REGIONS[0], bd = Infinity;
+  for (const r of REGIONS){
+    const dLat = rad(r.lat - lat), dLon = rad(r.lon - lon);
+    const a = Math.sin(dLat/2)**2 + Math.cos(rad(lat)) * Math.cos(rad(r.lat)) * Math.sin(dLon/2)**2;
+    const d = 6371 * 2 * Math.asin(Math.sqrt(a));
+    if (d < bd){ bd = d; best = r; }
+  }
+  return best;
+}
+
+// 지역이 바뀌면 듣던 채널을 새 지역 주파수로 다시 맞춘다
+function setRegion(next, byAuto){
+  const prev = region, prevSt = prev.s.find(s => s[0] === chKey);
+  region = next;
+  store.set("radio.region", next.id);
+  let st = next.s.find(s => s[0] === chKey);
+  let msg = "";
+  if (prev !== next){
+    if (st && prevSt){
+      msg = `${next.n}에 들어왔습니다. ${label(next, st)}을(를) ${fmt(prevSt[1])}에서 ${fmt(st[1])}MHz로 맞췄습니다.`;
+    } else if (!st){
+      const lost = prevSt ? label(prev, prevSt) : CH[chKey].n;
+      st = next.s[0]; chKey = st[0]; store.set("radio.ch", chKey);
+      msg = `${next.n}에서는 ${lost}이(가) 잡히지 않아 ${label(next, st)} ${fmt(st[1])}MHz로 바꿨습니다.`;
+    }
+  }
+  if (!st){ st = next.s[0]; chKey = st[0]; }
+  $("regionSel").value = next.id;
+  const t = $("toast");
+  if (msg){ t.textContent = msg; t.hidden = false; } else { t.hidden = true; }
+  render();
+}
+
+function tune(key){
+  chKey = key; store.set("radio.ch", key);
+  $("toast").hidden = true;
+  render();
+}
+
+function render(){
+  const st = region.s.find(s => s[0] === chKey) || region.s[0];
+  const c = CH[st[0]];
+  $("nowName").textContent = label(region, st);
+  $("nowSub").textContent = region.n + " · " + c.k + (st[3] ? " · " + st[3] : "");
+  $("nowFreq").textContent = fmt(st[1]);
+  const a = $("listen");
+  if (c.u){ a.href = c.u; a.hidden = false; } else { a.hidden = true; }
+
+  const band = $("band");
+  band.querySelectorAll(".mark").forEach(m => m.remove());
+  for (const s of region.s){
+    const b = document.createElement("button");
+    b.className = "mark" + (s[0] === st[0] ? " on" : "");
+    b.style.left = pos(s[1]);
+    b.setAttribute("aria-label", label(region, s) + " " + fmt(s[1]) + "MHz");
+    b.addEventListener("click", () => tune(s[0]));
+    band.appendChild(b);
+  }
+  $("needle").style.left = pos(st[1]);
+
+  const list = $("list");
+  list.textContent = "";
+  const rows = region.s.filter(s => kind === "전체" || CH[s[0]].k === kind).slice().sort((x, y) => x[1] - y[1]);
+  for (const s of rows){
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "st";
+    if (s[0] === st[0]) b.setAttribute("aria-current", "true");
+    const f = document.createElement("span"); f.className = "f"; f.textContent = fmt(s[1]);
+    const n = document.createElement("span"); n.className = "n"; n.textContent = label(region, s);
+    if (s[3]){ const d = document.createElement("span"); d.className = "d"; d.textContent = s[3]; n.appendChild(d); }
+    const k = document.createElement("span"); k.className = "k"; k.textContent = CH[s[0]].k;
+    b.append(f, n, k);
+    b.addEventListener("click", () => tune(s[0]));
+    li.appendChild(b); list.appendChild(li);
+  }
+  if (!rows.length){
+    const li = document.createElement("li"); li.className = "foot";
+    li.textContent = "이 지역에는 해당 분류의 방송이 없습니다. 다른 분류를 골라 보세요.";
+    list.appendChild(li);
+  }
+}
+
+function init(){
+  const sel = $("regionSel");
+  for (const r of REGIONS){
+    const o = document.createElement("option"); o.value = r.id; o.textContent = r.n; sel.appendChild(o);
+  }
+  sel.addEventListener("change", () => {
+    auto = false;
+    $("status").textContent = "지역을 직접 골랐습니다. 지역을 바꾸면 듣던 방송을 그 지역 주파수로 다시 맞춥니다.";
+    setRegion(REGIONS.find(r => r.id === sel.value), false);
+  });
+  const fl = $("filters");
+  for (const kd of KINDS){
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = kd; b.setAttribute("aria-pressed", String(kd === kind));
+    b.addEventListener("click", () => {
+      kind = kd;
+      fl.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x.textContent === kd)));
+      render();
+    });
+    fl.appendChild(b);
+  }
+  setRegion(region, false);
+
+  // 위치를 쓸 수 있는 환경(자체 주소에 올린 경우 등)에서는 이동을 따라가며 자동으로 맞춘다
+  try{
+    if (navigator.geolocation){
+      navigator.geolocation.watchPosition(p => {
+        const r = nearest(p.coords.latitude, p.coords.longitude);
+        auto = true;
+        $("status").innerHTML = "위치 자동 감지 중 · 가장 가까운 송신 지역 <b></b>";
+        $("status").querySelector("b").textContent = r.n;
+        if (r !== region) setRegion(r, true);
+      }, () => {
+        if (!auto) $("status").textContent = "이 화면에서는 위치를 읽을 수 없어 지역을 직접 고릅니다. 지역을 바꾸면 듣던 방송을 그 지역 주파수로 다시 맞춥니다.";
+      }, {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
+    }
+  }catch(e){}
+}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1055 @@
+{
+ "channels": [
+  {
+   "key": "k1",
+   "name": "KBS 1라디오",
+   "kind": "뉴스·시사",
+   "streamType": "kbs",
+   "streamArg": "21"
+  },
+  {
+   "key": "k2",
+   "name": "KBS 해피FM",
+   "kind": "음악·예능",
+   "streamType": "kbs",
+   "streamArg": "22"
+  },
+  {
+   "key": "kc",
+   "name": "KBS 쿨FM",
+   "kind": "음악·예능",
+   "streamType": "kbs",
+   "streamArg": "25"
+  },
+  {
+   "key": "ms",
+   "name": "MBC 표준FM",
+   "kind": "음악·예능",
+   "streamType": "mbc",
+   "streamArg": "sfm"
+  },
+  {
+   "key": "m4",
+   "name": "MBC FM4U",
+   "kind": "음악·예능",
+   "streamType": "mbc",
+   "streamArg": "mfm"
+  },
+  {
+   "key": "sp",
+   "name": "SBS 파워FM",
+   "kind": "음악·예능",
+   "streamType": "sbs",
+   "streamArg": "powerpc/powerfm"
+  },
+  {
+   "key": "sl",
+   "name": "SBS 러브FM",
+   "kind": "음악·예능",
+   "streamType": "sbs",
+   "streamArg": "lovepc/lovefm"
+  },
+  {
+   "key": "tbn",
+   "name": "TBN 교통방송",
+   "kind": "교통",
+   "streamType": "none",
+   "streamArg": ""
+  },
+  {
+   "key": "tbs",
+   "name": "TBS 교통방송",
+   "kind": "교통",
+   "streamType": "direct",
+   "streamArg": "https://cdnfm.tbs.seoul.kr/tbs/_definst_/tbs_fm_web_360.smil/playlist.m3u8"
+  },
+  {
+   "key": "ebs",
+   "name": "EBS FM",
+   "kind": "교육",
+   "streamType": "direct",
+   "streamArg": "https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8"
+  },
+  {
+   "key": "ytn",
+   "name": "YTN 라디오",
+   "kind": "뉴스·시사",
+   "streamType": "none",
+   "streamArg": ""
+  },
+  {
+   "key": "ifm",
+   "name": "경인방송 iFM",
+   "kind": "음악·예능",
+   "streamType": "none",
+   "streamArg": ""
+  },
+  {
+   "key": "obs",
+   "name": "OBS 라디오",
+   "kind": "음악·예능",
+   "streamType": "none",
+   "streamArg": ""
+  }
+ ],
+ "regions": [
+  {
+   "id": "seoul",
+   "name": "서울·인천·경기",
+   "lat": 37.5665,
+   "lon": 126.978,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 97.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 106.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "kc",
+     "freq": 89.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 95.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 91.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 107.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sl",
+     "freq": 103.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "tbs",
+     "freq": 95.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 100.5,
+     "localName": "TBN 경인교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 104.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ytn",
+     "freq": 94.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ifm",
+     "freq": 90.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "obs",
+     "freq": 99.9,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "chuncheon",
+   "name": "춘천",
+   "lat": 37.881,
+   "lon": 127.73,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 99.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 92.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 94.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 105.1,
+     "localName": "G1 프레시FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 103.7,
+     "localName": "TBN 강원교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 106.5,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "wonju",
+   "name": "원주",
+   "lat": 37.342,
+   "lon": 127.92,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 97.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 92.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 98.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 103.1,
+     "localName": "G1 프레시FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 105.9,
+     "localName": "TBN 강원교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 104.9,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "gangneung",
+   "name": "강릉",
+   "lat": 37.752,
+   "lon": 128.876,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 98.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 96.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 94.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 106.1,
+     "localName": "G1 프레시FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 105.5,
+     "localName": "TBN 강원교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 104.9,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "cheonan",
+   "name": "천안·아산",
+   "lat": 36.815,
+   "lon": 127.114,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 89.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 100.9,
+     "localName": "",
+     "note": "대전 식장산 송신"
+    },
+    {
+     "ch": "ms",
+     "freq": 92.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 97.5,
+     "localName": "",
+     "note": "대전 식장산 송신"
+    },
+    {
+     "ch": "sp",
+     "freq": 95.5,
+     "localName": "TJB 파워FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 103.1,
+     "localName": "TBN 충남교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 105.7,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "seosan",
+   "name": "서산·당진",
+   "lat": 36.785,
+   "lon": 126.45,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 88.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 91.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 96.5,
+     "localName": "TJB 파워FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 103.9,
+     "localName": "TBN 충남교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 102.3,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "daejeon",
+   "name": "대전·세종",
+   "lat": 36.351,
+   "lon": 127.385,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 94.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 100.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 92.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 97.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 95.7,
+     "localName": "TJB 파워FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 102.9,
+     "localName": "TBN 대전교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 105.7,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "cheongju",
+   "name": "청주",
+   "lat": 36.642,
+   "lon": 127.489,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 89.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 90.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 107.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 99.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 101.5,
+     "localName": "CJB 조이FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 103.3,
+     "localName": "TBN 충북교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 105.1,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "jeonju",
+   "name": "전주",
+   "lat": 35.824,
+   "lon": 127.148,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 96.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 92.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 94.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 99.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 90.1,
+     "localName": "JTV 매직FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 102.5,
+     "localName": "TBN 전북교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 106.9,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "gwangju",
+   "name": "광주",
+   "lat": 35.16,
+   "lon": 126.852,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 90.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 95.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 93.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 91.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 101.1,
+     "localName": "kbc 마이FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 97.3,
+     "localName": "TBN 광주교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 105.3,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "mokpo",
+   "name": "목포",
+   "lat": 34.812,
+   "lon": 126.392,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 105.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 89.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 102.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 104.1,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "yeosu",
+   "name": "여수·순천·광양",
+   "lat": 34.95,
+   "lon": 127.487,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 95.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 100.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 100.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 98.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 103.5,
+     "localName": "TBN 광주교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 106.3,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "daegu",
+   "name": "대구",
+   "lat": 35.871,
+   "lon": 128.601,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 101.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 102.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 96.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 95.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 99.3,
+     "localName": "TBC 드림FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 103.9,
+     "localName": "TBN 대구교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 105.1,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "andong",
+   "name": "안동",
+   "lat": 36.568,
+   "lon": 128.73,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 90.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 100.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 91.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 107.7,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "pohang",
+   "name": "포항",
+   "lat": 36.019,
+   "lon": 129.343,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 95.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 100.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 97.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 103.5,
+     "localName": "TBN 경북교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 106.7,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "busan",
+   "name": "부산",
+   "lat": 35.18,
+   "lon": 129.076,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 103.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 97.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 95.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 88.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 99.9,
+     "localName": "KNN 파워FM",
+     "note": ""
+    },
+    {
+     "ch": "sl",
+     "freq": 105.7,
+     "localName": "KNN 러브FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 94.9,
+     "localName": "TBN 부산교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 107.7,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "ulsan",
+   "name": "울산",
+   "lat": 35.539,
+   "lon": 129.311,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 90.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 97.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 98.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 92.3,
+     "localName": "ubc 그린FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 104.1,
+     "localName": "TBN 울산교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 105.9,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "changwon",
+   "name": "창원",
+   "lat": 35.228,
+   "lon": 128.681,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 91.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 106.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 98.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 100.5,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 102.5,
+     "localName": "KNN 파워FM",
+     "note": ""
+    },
+    {
+     "ch": "sl",
+     "freq": 90.9,
+     "localName": "KNN 러브FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 95.5,
+     "localName": "TBN 경남교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 104.3,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "jinju",
+   "name": "진주",
+   "lat": 35.18,
+   "lon": 128.108,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 90.3,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 91.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 97.7,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 105.5,
+     "localName": "KNN 파워FM",
+     "note": ""
+    },
+    {
+     "ch": "sl",
+     "freq": 98.7,
+     "localName": "KNN 러브FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 100.1,
+     "localName": "TBN 경남교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 101.5,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "id": "jeju",
+   "name": "제주",
+   "lat": 33.499,
+   "lon": 126.531,
+   "stations": [
+    {
+     "ch": "k1",
+     "freq": 99.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "k2",
+     "freq": 91.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "ms",
+     "freq": 97.9,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "m4",
+     "freq": 90.1,
+     "localName": "",
+     "note": ""
+    },
+    {
+     "ch": "sp",
+     "freq": 101.5,
+     "localName": "JIBS 뉴파워FM",
+     "note": ""
+    },
+    {
+     "ch": "tbn",
+     "freq": 105.5,
+     "localName": "TBN 제주교통방송",
+     "note": ""
+    },
+    {
+     "ch": "ebs",
+     "freq": 107.3,
+     "localName": "",
+     "note": ""
+    }
+   ]
+  }
+ ]
+}
